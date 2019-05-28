@@ -1,25 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
+import {Route} from 'react-router-dom';
+import io from 'socket.io-client';
+
 import './App.css';
+import {DrawingBoard} from "./components/DrawingBoard";
+import { DisplayBoard } from './components/DisplayBoard';
+
+function getIPAddress() {
+  return '10.0.0.104';
+}
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <Route exact path="/draw/" render={() => <DrawingBoard socket={io(getIPAddress()+":3231")} />} 
+      />
+      <Route exact path="/" render={() => 
+        <DisplayBoard socket={io(getIPAddress()+":3231")} 
+                      localUrl={getIPAddress()}
+                      />} 
+      />
+    </main>
   );
 }
 
