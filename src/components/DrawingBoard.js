@@ -77,6 +77,7 @@ export class DrawingBoard extends Component {
                             brushRadius={this.state.brushRadius}
                             catenaryColor="rgba(0, 0, 0, 0)"
                             ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
+                            backgroundColor="rgba(0,0,0,0)"
                 />
                 <button onClick={() => this.saveableCanvas.undo()}>Undo</button>
                 <button onClick={() => this.saveableCanvas.clear()}>Clear</button>

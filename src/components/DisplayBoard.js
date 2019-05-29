@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import CanvasDraw from "react-canvas-draw";
+import '../App.css';
 
 export class DisplayBoard extends Component {
 
     constructor(props) {
         super();
         this.state = {
-            canvasWidth:  window.innerWidth,
-            canvasHeight: window.innerHeight,
+            componentList: [],
             socket: null,
             save: null
         }
@@ -24,49 +24,46 @@ export class DisplayBoard extends Component {
     loadSavedData = () => {
         this.state.socket.on('savedDrawing', ({save, height, width}) => {
             if(save) {
-                this.setState({
-                    canvasHeight: height,
-                    canvasWidth: width
-                })
-                this.loadableCanvas.loadSaveData(save);
+                const componentList = this.state.componentList;
+                componentList.push(
+                    <CanvasDraw
+                        disabled={true}
+                        loadTimeOffset={2}
+                        className="canvas"
+                        brushColor="rgba(0,0,0,0)"
+                        catenaryColor="rgba(0, 0, 0, 0)"
+                        canvasWidth={width/3.5} 
+                        canvasHeight={height/3.5}
+                        hideGrid={true}
+                        ref={canvasDraw => (this.loadableCanvas = canvasDraw)}
+                        saveData={save}
+                        backgroundColor="rgba(0,0,0,0)"
+                    />
+                );
+                this.setState(componentList);
             }
-        });
-    }
 
-    updateDimensions() {
-        this.setState({
-            canvasWidth: window.innerWidth-50,
-            canvasHeight: window.innerHeight-200
         });
     }
 
     async componentDidMount() {
         await this.initSocket();
         this.loadSavedData();
-        this.updateDimensions();
-        window.addEventListener("resize", this.updateDimensions.bind(this));
-    }
-
-    componentWillUnmount() {
-       window.removeEventListener("resize", this.updateDimensions.bind(this));
     }
 
     render() {
+        let componentList = this.state.componentList;
         return (
             <div>
                 <h2>The Big Party Board</h2>
                 <h3>Go to {this.props.localUrl}:3000/draw to start</h3>
-                <CanvasDraw 
-                            disabled={true}
-                            loadTimeOffset={2}
-                            className="canvas"
-                            brushColor="rgba(0,0,0,0)"
-                            catenaryColor="rgba(0, 0, 0, 0)"
-                            canvasWidth={this.state.canvasWidth} 
-                            canvasHeight={this.state.canvasHeight}
-                            hideGrid={true}
-                            ref={canvasDraw => (this.loadableCanvas = canvasDraw)}
-                />
+                <div className="display-board">
+                    {componentList.map((component, index) => (
+                        <React.Fragment key={index}>
+                            {component}
+                        </React.Fragment>
+                    ))}
+                </div>
             </div>
         )
     }
