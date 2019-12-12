@@ -1,37 +1,115 @@
 body {
-  text-align: center;
-  background-color: black;
+    text-align: center;
+    background-color: black;
 }
 
-h2, h3 {
-  color: white;
+h2,
+h3 {
+    color: white;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.container {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 10% auto;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.title-board {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 50px;
 }
 
-.App-link {
-  color: #61dafb;
+.qrcode {
+    position: fixed;
+    top: calc(100% - 168px);
+    left: calc(100% - 168px);
 }
 
 .display-board {
-  display: flex;
-  flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
 }
 
-canvas {
+.moving-canvas {
+    display: block;
+    position: absolute;
+    -webkit-animation: moveX 5s linear 0s infinite alternate,
+        moveY 8s linear 0s infinite alternate;
+    -moz-animation: moveX 5s linear 0s infinite alternate,
+        moveY 8s linear 0s infinite alternate;
+    -o-animation: moveX 5s linear 0s infinite alternate,
+        moveY 8s linear 0s infinite alternate;
+    animation: moveX 5s linear 0s infinite alternate,
+        moveY 8s linear 0s infinite alternate;
+}
+
+@-webkit-keyframes moveX {
+    from {
+        left: 0;
+    }
+    to {
+        left: calc(100% - 150px);
+    }
+}
+@-moz-keyframes moveX {
+    from {
+        left: 0;
+    }
+    to {
+        left: calc(100% - 150px);
+    }
+}
+@-o-keyframes moveX {
+    from {
+        left: 0;
+    }
+    to {
+        left: calc(100% - 150px);
+    }
+}
+@keyframes moveX {
+    from {
+        left: 0;
+    }
+    to {
+        left: calc(100% - 150px);
+    }
+}
+
+@-webkit-keyframes moveY {
+    from {
+        top: 0;
+    }
+    to {
+        top: calc(100% - 150px);
+    }
+}
+@-moz-keyframes moveY {
+    from {
+        top: 0;
+    }
+    to {
+        top: calc(100% - 150px);
+    }
+}
+@-o-keyframes moveY {
+    from {
+        top: 0;
+    }
+    to {
+        top: calc(100% - 150px);
+    }
+}
+@keyframes moveY {
+    from {
+        top: 0;
+    }
+    to {
+        top: calc(100% - 150px);
+    }
 }
