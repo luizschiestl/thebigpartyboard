@@ -26,15 +26,13 @@ export class DrawingBoard extends Component {
 
     initSocket() {
         const { socket } = this.props;
-        socket.on("connect", () => {
-            console.log("Connected");
-        });
+        socket.on("connect", () => {});
     }
 
     updateDimensions() {
         this.setState({
             canvasWidth: window.innerWidth,
-            canvasHeight: window.innerHeight - 50
+            canvasHeight: window.innerHeight - 80
         });
     }
 
@@ -67,7 +65,6 @@ export class DrawingBoard extends Component {
         const saveData = saveableCanvas.getSaveData();
         await this.setState({ save: saveData });
         const { socket } = this.props;
-        console.log(socket);
         socket.emit("savedDrawing", {
             save: this.state.save,
             height: this.state.canvasHeight,
@@ -90,13 +87,17 @@ export class DrawingBoard extends Component {
                     ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
                     backgroundColor="rgba(0,0,0,0)"
                 />
-                <button onClick={() => this.saveableCanvas.undo()}>Undo</button>
-                <button onClick={() => this.saveableCanvas.clear()}>
-                    Clear
-                </button>
-                <button onClick={() => this.save(this.saveableCanvas)}>
-                    Save
-                </button>
+                <div className="buttons">
+                    <button onClick={() => this.saveableCanvas.undo()}>
+                        Undo
+                    </button>
+                    <button onClick={() => this.saveableCanvas.clear()}>
+                        Clear
+                    </button>
+                    <button onClick={() => this.save(this.saveableCanvas)}>
+                        Send
+                    </button>
+                </div>
             </div>
         );
     }

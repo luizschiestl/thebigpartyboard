@@ -1,8 +1,15 @@
-require("dotenv/config");
-var app = require("http").createServer();
-var io = (module.exports.io = require("socket.io")(app));
+const path = require("path");
+const express = require("express");
+const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+const port = process.env.PORT || 8080;
 
-const PORT = process.env.PORT_SOCKET || 3231;
+app.use(express.static(path.join(__dirname, "../../build")));
+
+// app.get("*", (req, res) => {
+//     res.sendFile(__dirname + "../../build/index.html");
+// });
 
 io.on("connection", socket => {
     socket.on("savedDrawing", save => {
@@ -10,6 +17,4 @@ io.on("connection", socket => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log("Connected to port: " + PORT);
-});
+server.listen(port);

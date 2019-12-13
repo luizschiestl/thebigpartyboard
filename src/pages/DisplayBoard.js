@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
-import "../App.css";
 import QRCode from "qrcode.react";
 
 export class DisplayBoard extends Component {
@@ -114,8 +113,8 @@ export class DisplayBoard extends Component {
             <div>
                 <div className="container">
                     <div className="title-board">
-                        <h2>The Big Party Board</h2>
-                        <h3>Go to {this.props.localUrl}/draw to start</h3>
+                        <h2>The Big Party Board!</h2>
+                        <h3>Go to {this.props.localUrl}/#/draw to start</h3>
                     </div>
                     <div
                         className="display-board"
@@ -131,7 +130,7 @@ export class DisplayBoard extends Component {
                 </div>
                 <QRCode
                     className="qrcode"
-                    value={this.props.localUrl + "/draw"}
+                    value={this.props.localUrl + "/#/draw"}
                     bgColor="#000"
                     fgColor="#fff"
                     size={148}

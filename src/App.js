@@ -1,42 +1,34 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { HashRouter, Switch, Route } from "react-router-dom";
 import io from "socket.io-client";
 
 import "./App.css";
-import { DrawingBoard } from "./components/DrawingBoard";
-import { DisplayBoard } from "./components/DisplayBoard";
+import { DrawingBoard } from "./pages/DrawingBoard";
+import { DisplayBoard } from "./pages/DisplayBoard";
+
+const socket = io();
 
 function App() {
     return (
-        <main>
-            <Route
-                exact
-                path="/draw/"
-                render={() => (
-                    <DrawingBoard
-                        socket={io(
-                            process.env.REACT_APP_URL +
-                                ":" +
-                                process.env.REACT_APP_PORT_SOCKET
-                        )}
-                    />
-                )}
-            />
-            <Route
-                exact
-                path="/"
-                render={() => (
-                    <DisplayBoard
-                        socket={io(
-                            process.env.REACT_APP_URL +
-                                ":" +
-                                process.env.REACT_APP_PORT_SOCKET
-                        )}
-                        localUrl={process.env.REACT_APP_URL}
-                    />
-                )}
-            />
-        </main>
+        <HashRouter>
+            <Switch>
+                <Route
+                    exact
+                    path="/draw"
+                    render={() => <DrawingBoard socket={socket} />}
+                />
+                <Route
+                    exact
+                    path="/"
+                    render={() => (
+                        <DisplayBoard
+                            socket={socket}
+                            localUrl={process.env.REACT_APP_URL}
+                        />
+                    )}
+                />
+            </Switch>
+        </HashRouter>
     );
 }
 
