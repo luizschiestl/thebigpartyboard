@@ -10,30 +10,40 @@ h3 {
 
 .container {
     height: 100vh;
-    display: grid;
-    grid-template-rows: 10% auto;
 }
 
 .title-board {
+    position: fixed;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 0 50px;
+}
+
+.title-board h2,
+.title-board h3 {
+    margin: 20px;
+}
+
+.drawing-container {
+    height: 90vh;
+    align-self: center;
+    display: grid;
+    grid-template-rows: auto 15%;
 }
 
 .buttons {
-    position: fixed;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     width: 100%;
-    top: calc(100% - 80px);
+    height: 100%;
 }
 
 .buttons button {
-    height: 60px;
-    width: 25%;
-    font-size: 28px;
+    height: 80%;
+    font-size: 18px;
     font-weight: bold;
     background: white;
     border: 8px solid hotpink;
@@ -49,8 +59,11 @@ h3 {
 .display-board {
     margin: 0;
     padding: 0;
-    position: relative;
+    height: 100%;
+    width: 100%;
+    position: fixed;
     overflow: hidden;
+    z-index: -1;
 }
 
 .moving-canvas {
@@ -68,7 +81,7 @@ h3 {
 
 @-webkit-keyframes moveX {
     from {
-        left: 0;
+        left: -150px;
     }
     to {
         left: calc(100% - 150px);
@@ -76,7 +89,7 @@ h3 {
 }
 @-moz-keyframes moveX {
     from {
-        left: 0;
+        left: -150px;
     }
     to {
         left: calc(100% - 150px);
@@ -84,7 +97,7 @@ h3 {
 }
 @-o-keyframes moveX {
     from {
-        left: 0;
+        left: -150px;
     }
     to {
         left: calc(100% - 150px);
@@ -92,7 +105,7 @@ h3 {
 }
 @keyframes moveX {
     from {
-        left: 0;
+        left: -150px;
     }
     to {
         left: calc(100% - 150px);
@@ -101,7 +114,7 @@ h3 {
 
 @-webkit-keyframes moveY {
     from {
-        top: 0;
+        top: -150px;
     }
     to {
         top: calc(100% - 150px);
@@ -109,7 +122,7 @@ h3 {
 }
 @-moz-keyframes moveY {
     from {
-        top: 0;
+        top: -150px;
     }
     to {
         top: calc(100% - 150px);
@@ -117,7 +130,7 @@ h3 {
 }
 @-o-keyframes moveY {
     from {
-        top: 0;
+        top: -150px;
     }
     to {
         top: calc(100% - 150px);
@@ -125,7 +138,7 @@ h3 {
 }
 @keyframes moveY {
     from {
-        top: 0;
+        top: -150px;
     }
     to {
         top: calc(100% - 150px);

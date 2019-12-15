@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
+import io from "socket.io-client";
 
 export class DrawingBoard extends Component {
     constructor(props) {
         super();
         this.state = {
-            canvasWidth: window.innerWidth,
-            canvasHeight: window.innerHeight,
             brushColor: props.brushColor,
             brushRadius: 10,
-            save: null,
             socket: null
         };
     }
@@ -25,76 +23,61 @@ export class DrawingBoard extends Component {
     }
 
     initSocket() {
-        const { socket } = this.props;
-        socket.on("connect", () => {});
-    }
-
-    updateDimensions() {
-        this.setState({
-            canvasWidth: window.innerWidth,
-            canvasHeight: window.innerHeight - 80
-        });
+        const socket = io();
+        this.setState({ socket });
     }
 
     componentDidMount() {
         this.initSocket();
-        this.updateDimensions();
         this.setColor();
-        window.addEventListener("resize", this.updateDimensions.bind(this));
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions.bind(this));
-    }
-
-    switchToEraser() {
-        this.setState({
-            brushColor: "#ffffff",
-            brushRadius: 30
-        });
-    }
-
-    switchToBrush() {
-        this.setState({
-            brushColor: this.props.brushColor,
-            brushRadius: 10
-        });
-    }
-
-    async save(saveableCanvas) {
+    save(saveableCanvas) {
         const saveData = saveableCanvas.getSaveData();
-        await this.setState({ save: saveData });
-        const { socket } = this.props;
-        socket.emit("savedDrawing", {
-            save: this.state.save,
-            height: this.state.canvasHeight,
-            width: this.state.canvasWidth
+        this.state.socket.emit("savedDrawing", {
+            save: saveData
         });
         saveableCanvas.clear();
     }
 
     render() {
+        let borderStyle = {
+            borderColor: this.state.brushColor
+        };
         return (
-            <div>
+            <div className="drawing-container">
                 <CanvasDraw
-                    canvasWidth={this.state.canvasWidth}
-                    canvasHeight={this.state.canvasHeight}
+                    className="drawing-canvas"
                     hideGrid={true}
                     lazyRadius={0}
                     brushColor={this.state.brushColor}
                     brushRadius={this.state.brushRadius}
-                    catenaryColor="rgba(0, 0, 0, 0)"
+                    canvasWidth="100%"
+                    canvasHeight="100%"
+                    catenaryColor="rgba(0,0,0,0)"
                     ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
                     backgroundColor="rgba(0,0,0,0)"
                 />
                 <div className="buttons">
-                    <button onClick={() => this.saveableCanvas.undo()}>
+                    <button onClick={() => this.setColor()} style={borderStyle}>
+                        Change Color
+                    </button>
+                    <button
+                        onClick={() => this.saveableCanvas.undo()}
+                        style={borderStyle}
+                    >
                         Undo
                     </button>
-                    <button onClick={() => this.saveableCanvas.clear()}>
+                    <button
+                        onClick={() => this.saveableCanvas.clear()}
+                        style={borderStyle}
+                    >
                         Clear
                     </button>
-                    <button onClick={() => this.save(this.saveableCanvas)}>
+                    <button
+                        onClick={() => this.save(this.saveableCanvas)}
+                        style={borderStyle}
+                    >
                         Send
                     </button>
                 </div>

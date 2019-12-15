@@ -1,88 +1,80 @@
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 import QRCode from "qrcode.react";
+import io from "socket.io-client";
 
 export class DisplayBoard extends Component {
     constructor(props) {
         super();
         this.state = {
-            divWidth: window.innerWidth,
-            divHeight: window.innerHeight,
-            componentList: [],
-            socket: null,
-            save: null
+            componentList: []
         };
     }
 
-    initSocket() {
-        const { socket } = this.props;
-        socket.on("connect", () => {
-            console.log("Connected");
-        });
-        this.setState({ socket });
-    }
-
-    updateDimensions() {
-        this.setState({
-            divWidth: window.innerWidth,
-            divHeight: window.innerHeight - 50
+    registerToSocket() {
+        const socket = io();
+        socket.on("savedDrawing", ({ save }) => {
+            save && this.loadSavedData(save);
         });
     }
 
-    loadSavedData = () => {
-        this.state.socket.on("savedDrawing", ({ save, height, width }) => {
-            if (save) {
-                const obj = JSON.parse(save);
-                let minX = width;
-                let minY = height;
-                let maxX = 0;
-                let maxY = 0;
-                // eslint-disable-next-line
-                obj.lines.map(line =>
-                    // eslint-disable-next-line
-                    line.points.map(point => {
-                        if (minX > point.x) {
-                            minX = point.x;
-                        }
-                        if (minY > point.y) {
-                            minY = point.y;
-                        }
-                        if (maxX < point.x) {
-                            maxX = point.x;
-                        }
-                        if (maxY < point.y) {
-                            maxY = point.y;
-                        }
-                    })
-                );
-                // eslint-disable-next-line
-                obj.lines.map(line =>
-                    // eslint-disable-next-line
-                    line.points.map(point => {
-                        point.x = point.x - minX + 15;
-                        point.y = point.y - minY + 15;
-                    })
-                );
-                obj.width = maxX - minX + 30;
-                obj.height = maxY - minY + 30;
-                let newHeight = 0;
-                let newWidth = 0;
-                if (obj.width > obj.height) {
-                    newWidth = 300;
-                    newHeight = (300 * obj.height) / obj.width;
-                } else {
-                    newWidth = (300 * obj.width) / obj.height;
-                    newHeight = 300;
-                }
+    setMinMaxPoints(lines) {
+        let xPoints = [].concat(
+            ...lines.map(function(line) {
+                return line.points.map(function(point) {
+                    return point.x;
+                });
+            })
+        );
+        let yPoints = [].concat(
+            ...lines.map(function(line) {
+                return line.points.map(function(point) {
+                    return point.y;
+                });
+            })
+        );
 
-                const componentList = this.state.componentList;
-                componentList.push(
+        return {
+            minX: Math.min(...xPoints),
+            minY: Math.min(...yPoints),
+            maxX: Math.max(...xPoints),
+            maxY: Math.max(...yPoints)
+        };
+    }
+
+    loadSavedData(save) {
+        const obj = JSON.parse(save);
+        if (obj.lines.length !== 0) {
+            const minMaxPoints = this.setMinMaxPoints(obj.lines);
+
+            obj.lines.map(function(line) {
+                return line.points.map(function(point) {
+                    point.x = point.x - minMaxPoints.minX + 15;
+                    point.y = point.y - minMaxPoints.minY + 15;
+                    return point;
+                });
+            });
+            obj.width = minMaxPoints.maxX - minMaxPoints.minX + 30;
+            obj.height = minMaxPoints.maxY - minMaxPoints.minY + 30;
+            let newHeight = 0;
+            let newWidth = 0;
+            if (obj.width > obj.height) {
+                newWidth = 300;
+                newHeight = (300 * obj.height) / obj.width;
+            } else {
+                newWidth = (300 * obj.width) / obj.height;
+                newHeight = 300;
+            }
+
+            this.setState({
+                componentList: [
+                    ...this.state.componentList,
                     <CanvasDraw
                         disabled={true}
                         loadTimeOffset={10}
                         className="moving-canvas"
                         brushColor="rgba(0,0,0,0)"
-                        catenaryColor="rgba(0, 0, 0, 0)"
+                        catenaryColor="rgba(0,0,0,0)"
                         canvasWidth={newWidth}
                         canvasHeight={newHeight}
                         hideGrid={true}
@@ -90,37 +82,27 @@ export class DisplayBoard extends Component {
                         saveData={JSON.stringify(obj)}
                         backgroundColor="rgba(0,0,0,0)"
                     />
-                );
-                this.setState(componentList);
-            }
-        });
-    };
-
-    async componentDidMount() {
-        await this.initSocket();
-        this.loadSavedData();
-        this.updateDimensions();
-        window.addEventListener("resize", this.updateDimensions.bind(this));
+                ]
+            });
+        }
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions.bind(this));
+    componentDidMount() {
+        this.registerToSocket();
     }
 
     render() {
-        let componentList = this.state.componentList;
+        let { componentList } = this.state;
         return (
             <div>
                 <div className="container">
                     <div className="title-board">
-                        <h2>The Big Party Board!</h2>
-                        <h3>Go to {this.props.localUrl}/#/draw to start</h3>
+                        <h2>The Big Party Board</h2>
+                        <h3>
+                            Go to {process.env.REACT_APP_URL}/#/draw to start
+                        </h3>
                     </div>
-                    <div
-                        className="display-board"
-                        width={this.state.divWidth}
-                        height={this.state.divHeight}
-                    >
+                    <div className="display-board">
                         {componentList.map((component, index) => (
                             <React.Fragment key={index}>
                                 {component}
@@ -130,7 +112,7 @@ export class DisplayBoard extends Component {
                 </div>
                 <QRCode
                     className="qrcode"
-                    value={this.props.localUrl + "/#/draw"}
+                    value={process.env.REACT_APP_URL + "/#/draw"}
                     bgColor="#000"
                     fgColor="#fff"
                     size={148}
