@@ -1,0 +1,41 @@
+.drawing-canvas {
+    position: fixed;
+}
+
+.buttons {
+    position: fixed;
+    top: calc(100% - 180px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 180px;
+    width: 100%;
+}
+
+.buttons button {
+    justify-self: center;
+    font-size: 18px;
+    height: 70%;
+    width: 80%;
+    padding: 0;
+    border: 0;
+    font-weight: bold;
+    background-color: white;
+    border-radius: 15px;
+    outline-style: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.buttons button:active {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    -webkit-transform: translate(8px, 8px);
+    transform: translate(8px, 8px);
+}

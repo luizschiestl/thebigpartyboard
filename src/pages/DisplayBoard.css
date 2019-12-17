@@ -1,0 +1,94 @@
+h1,
+h2 {
+    margin: 10px 20px;
+    line-height: 2.2rem;
+}
+
+a {
+    color: #000;
+    background-color: white;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.title-bar {
+    position: fixed;
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: rgba(0, 255, 0, 0.8);
+}
+
+.qrcode {
+    position: fixed;
+    padding: 5px;
+    border-radius: 15px;
+    background-color: white;
+    top: calc(100% - 168px);
+    left: calc(100% - 168px);
+}
+
+.display-board {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.moving-canvas {
+    display: block;
+    position: absolute;
+    -webkit-animation: moveX 5s linear 0s infinite alternate,
+        moveY 8s linear 0s infinite alternate;
+    animation: moveX 5s linear 0s infinite alternate,
+        moveY 8s linear 0s infinite alternate;
+}
+
+@-webkit-keyframes moveX {
+    from {
+        left: -150px;
+    }
+    to {
+        left: calc(100% - 150px);
+    }
+}
+@keyframes moveX {
+    from {
+        left: -150px;
+    }
+    to {
+        left: calc(100% - 150px);
+    }
+}
+
+@-webkit-keyframes moveY {
+    from {
+        top: -150px;
+    }
+    to {
+        top: calc(100% - 150px);
+    }
+}
+@keyframes moveY {
+    from {
+        top: -150px;
+    }
+    to {
+        top: calc(100% - 150px);
+    }
+}

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 import QRCode from "qrcode.react";
 import io from "socket.io-client";
+import "./DisplayBoard.css";
 
 export class DisplayBoard extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ export class DisplayBoard extends Component {
     }
 
     registerToSocket() {
-        const socket = io();
+        const socket = io(process.env.REACT_APP_SOCKET_URL);
         socket.on("savedDrawing", ({ save }) => {
             save && this.loadSavedData(save);
         });
@@ -94,27 +95,26 @@ export class DisplayBoard extends Component {
     render() {
         let { componentList } = this.state;
         return (
-            <div>
-                <div className="container">
-                    <div className="title-board">
-                        <h2>The Big Party Board</h2>
-                        <h3>
-                            Go to {process.env.REACT_APP_URL}/#/draw to start
-                        </h3>
-                    </div>
-                    <div className="display-board">
-                        {componentList.map((component, index) => (
-                            <React.Fragment key={index}>
-                                {component}
-                            </React.Fragment>
-                        ))}
-                    </div>
+            <div className="container">
+                <div className="title-bar">
+                    <h1>The Big Party Board</h1>
+                    <h2>
+                        Go to{" "}
+                        <a href={process.env.REACT_APP_URL + "/#/draw"}>
+                            {process.env.REACT_APP_URL}/#/draw
+                        </a>{" "}
+                        <br></br>
+                        on your phone or scan QRCode to start
+                    </h2>
+                </div>
+                <div className="display-board">
+                    {componentList.map((component, index) => (
+                        <React.Fragment key={index}>{component}</React.Fragment>
+                    ))}
                 </div>
                 <QRCode
                     className="qrcode"
                     value={process.env.REACT_APP_URL + "/#/draw"}
-                    bgColor="#000"
-                    fgColor="#fff"
                     size={148}
                 />
             </div>

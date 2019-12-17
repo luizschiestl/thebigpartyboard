@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 import io from "socket.io-client";
+import "./DrawingBoard.css";
 
 export class DrawingBoard extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export class DrawingBoard extends Component {
     }
 
     initSocket() {
-        const socket = io();
+        const socket = io(process.env.REACT_APP_SOCKET_URL);
         this.setState({ socket });
     }
 
@@ -42,7 +43,7 @@ export class DrawingBoard extends Component {
 
     render() {
         let borderStyle = {
-            borderColor: this.state.brushColor
+            boxShadow: "8px 8px " + this.state.brushColor
         };
         return (
             <div className="drawing-container">
@@ -52,8 +53,8 @@ export class DrawingBoard extends Component {
                     lazyRadius={0}
                     brushColor={this.state.brushColor}
                     brushRadius={this.state.brushRadius}
-                    canvasWidth="100%"
-                    canvasHeight="100%"
+                    canvasWidth="100vw"
+                    canvasHeight="calc(100vh - 180px)"
                     catenaryColor="rgba(0,0,0,0)"
                     ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
                     backgroundColor="rgba(0,0,0,0)"
